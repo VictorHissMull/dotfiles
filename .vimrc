@@ -112,7 +112,7 @@ if !empty($WAYLAND_DISPLAY)
 endif
 
 " }}}
-"
+
 " MAPPINGS --------------------------------------------------------------- {{{
 
 " Type jj to exit insert mode quickly.
@@ -130,10 +130,14 @@ tnoremap <C-K> <C-W><C-K>
 tnoremap <C-L> <C-W><C-L>
 tnoremap <C-H> <C-W><C-H>
 
+" Ensure <C-L> also works in netrw context by remapping the refresh feature
+autocmd FileType netrw nnoremap <buffer> <C-L> <C-W><C-L>
+autocmd FileType netrw nnoremap <buffer> <leader>r :call netrw#LocalBrowseRefresh()<CR>
+
 " Resize split windows using arrow keys by pressing:
 " CTRL+UP, CTRL+DOWN, CTRL+LEFT, or CTRL+RIGHT.
-noremap <c-up> <c-w>-
-noremap <c-down> <c-w>+
+noremap <c-up> <c-w>+
+noremap <c-down> <c-w>-
 noremap <c-left> <c-w>>
 noremap <c-right> <c-w><
 
@@ -210,7 +214,7 @@ set statusline+=\ %F\ %M\ %Y\ %R
 set statusline+=%=
 
 " Status line right side.
-set statusline+=\ ascii\/hex:%b\/0x%B\ row:\ %l\ col:\ %c\ percent:\ %p%%
+set statusline+=\ ascii\/hex:%b\/0x%B\ row\/col:%l\/%c\ percent:%p%%
 
 " Show the status on the second to last line.
 set laststatus=2
