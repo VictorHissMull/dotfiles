@@ -2,10 +2,25 @@
 
 " GENERAL ---------------------------------------------------------------- {{{
 
-" vim specific colors
+" copy neovim settings to vim
 if !has('nvim')
-    set termguicolors
-    colorscheme catppuccin_mocha
+    " Disable vi compatibility
+    set nocompatible
+    
+    " If file is changed outside of vim, read it again
+    set autoread
+ 
+    " no bell from vim
+    set belloff=all 
+    "
+    " ttimeout settings to reduce lag when starting with <ESC>
+    set ttimeout        " enable separate terminal key timeout
+    set ttimeoutlen=50  " set it to 50ms for fast <C-[> etc.
+
+    set showcmd " show last command typed
+    
+    set autoindent " copy indent from current line when starting a new line
+    set smarttab " helps with tabwidth alignment
 endif
 
 " Make background transparent
@@ -13,13 +28,6 @@ highlight Normal guibg=NONE
 highlight NonText guibg=NONE
 highlight Normal ctermbg=NONE
 highlight NonText ctermbg=NONE
-
-" Disable vi compatibility
-set nocompatible
-
-" ttimeout settings to reduce lag when starting with <ESC>
-set ttimeout        " enable separate terminal key timeout
-set ttimeoutlen=10  " set it to 10ms for fast <C-[> etc.
 
 " Filetype detection
 filetype on
@@ -40,7 +48,6 @@ set scrolloff=10
 
 " Convenience settings
 set nowrap " no line wrapping
-set showcmd " show last command typed
 set showmode " show the vim modal you are in
 set showmatch " show matching words during search
 set hlsearch " use highlighting when searching
@@ -56,17 +63,16 @@ set wildignore=*.decx,*.jpg,*.png,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx " ignore 
 set incsearch " incremental highlighting while searching
 set ignorecase " ignore casing for lower letter searches
 set smartcase " override ignore case if search has captical letters
-
-set backspace=indent,eol,start " allow for using backspace over autoindent, line braks, start of insert
+set backspace=indent,eol,start " allow for using backspace over autoindent, line brakes, start of insert
 
 " Indent and TAB settings
-set autoindent " copy indent from current line when starting a new line
 set smartindent " add indentation for C-like languages after, e.g., an '{' or 'if'. Works on top of autoindent.
 
 set tabstop=4 " the display width of a tab character in columns
 set shiftwidth=4 " number of spaces to use for each autoindent step
 set expandtab " use space characters instead of tabs
 set softtabstop=4 " number of spaces that a <Tab> counts for while performing editing
+set smarttab
 
 " Natural split opening
 set splitbelow
@@ -96,19 +102,21 @@ autocmd FileType netrw let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'
 
 set clipboard+=unnamedplus
 
-" WAYLAND workaround
+" WAYLAND workaround for vim only
 " clipboard support using wl-clipboard utility
 " yanking only works in visual mode to + register
-if !empty($WAYLAND_DISPLAY)
-  if executable('wl-copy') && executable('wl-paste')
-    xnoremap "+y y:call system("wl-copy", @")<CR>
-    nnoremap "+p :let @"=substitute(system("wl-paste --no-newline"), '<C-v><C-m>', '', 'g')<CR>p
-    nnoremap "*p :let @"=substitute(system("wl-paste --no-newline --primary"), '<C-v><C-m>', '', 'g')<CR>p
-  else
-    echohl WarningMsg
-    echom "Warning: wl-copy or wl-paste not found — clipboard mappings disabled."
-    echohl None
-  endif
+if !has('nvim')
+    if !empty($WAYLAND_DISPLAY)
+        if executable('wl-copy') && executable('wl-paste')
+            xnoremap "+y y:call system("wl-copy", @")<CR>
+            nnoremap "+p :let @"=substitute(system("wl-paste --no-newline"), '<C-v><C-m>', '', 'g')<CR>p
+            nnoremap "*p :let @"=substitute(system("wl-paste --no-newline --primary"), '<C-v><C-m>', '', 'g')<CR>p
+        else
+            echohl WarningMsg
+            echom "Warning: wl-copy or wl-paste not found — clipboard mappings disabled."
+            echohl None
+        endif
+    endif
 endif
 
 " }}}
